@@ -1,18 +1,31 @@
 import useAuthStore from "@/store/authStore";
+import { useThemeStore } from "@/store/themeStore";
 import { Stack } from "expo-router";
+import {
+  MD3DarkTheme,
+  MD3LightTheme,
+  PaperProvider,
+  ThemeBase,
+} from "react-native-paper";
 
 const ScreenLayout = () => {
   const { isLoggedIn } = useAuthStore((state) => state);
+  const { theme } = useThemeStore((state) => state);
+
+  const paperTheme: ThemeBase = theme === "dark" ? MD3DarkTheme : MD3LightTheme;
+
   return (
-    <Stack screenOptions={{ headerShown: false }}>
-      <Stack.Protected guard={isLoggedIn}>
-        <Stack.Screen name="(tabs)" options={{ title: "Tabs" }} />
-        <Stack.Screen name="(group)" options={{ title: "Home" }} />
-      </Stack.Protected>
-      <Stack.Protected guard={!isLoggedIn}>
-        <Stack.Screen name="login" options={{ title: "Login" }} />
-      </Stack.Protected>
-    </Stack>
+    <PaperProvider theme={paperTheme}>
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Protected guard={isLoggedIn}>
+          <Stack.Screen name="(tabs)" options={{ title: "Tabs" }} />
+          <Stack.Screen name="(screens)" options={{ title: "Home" }} />
+        </Stack.Protected>
+        <Stack.Protected guard={!isLoggedIn}>
+          <Stack.Screen name="login" options={{ title: "Login" }} />
+        </Stack.Protected>
+      </Stack>
+    </PaperProvider>
   );
 };
 

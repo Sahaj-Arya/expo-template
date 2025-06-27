@@ -9,7 +9,7 @@ const Second = () => {
   return (
     <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
       <Text>Second</Text>
-      <Link href="/(group)/first" push asChild>
+      <Link href="/(screens)/first" push asChild>
         <Button title="Go to First"></Button>
       </Link>
     </View>
