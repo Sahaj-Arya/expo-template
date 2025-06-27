@@ -1,35 +1,32 @@
-import * as SecureStore from "expo-secure-store";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { create } from "zustand";
-import { createJSONStorage, persist } from "zustand/middleware";
+
+const AUTH_KEY = "auth-store:isLoggedIn";
 
 type AuthStore = {
   isLoggedIn: boolean;
-  login: () => void;
-  logout: () => void;
+  login: () => Promise<void>;
+  logout: () => Promise<void>;
+  loadAuthState: () => Promise<void>;
 };
 
-const useAuthStore = create<AuthStore>()(
-  persist(
-    (set) => ({
-      isLoggedIn: false,
-      login: () => set({ isLoggedIn: true }),
-      logout: () => set({ isLoggedIn: false }),
-    }),
-    {
-      name: "auth-store",
-      storage: createJSONStorage(() => ({
-        setItem: async (key, value) => {
-          await SecureStore.setItemAsync(key, value);
-        },
-        getItem: async (key) => {
-          return await SecureStore.getItemAsync(key);
-        },
-        removeItem: async (key) => {
-          await SecureStore.deleteItemAsync(key);
-        },
-      })),
-    }
-  )
-);
+const useAuthStore = create<AuthStore>((set) => ({
+  isLoggedIn: false,
+
+  login: async () => {
+    await AsyncStorage.setItem(AUTH_KEY, "true");
+    set({ isLoggedIn: true });
+  },
+
+  logout: async () => {
+    await AsyncStorage.setItem(AUTH_KEY, "false");
+    set({ isLoggedIn: false });
+  },
+
+  loadAuthState: async () => {
+    const stored = await AsyncStorage.getItem(AUTH_KEY);
+    set({ isLoggedIn: stored === "true" });
+  },
+}));
 
 export default useAuthStore;

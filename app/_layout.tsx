@@ -1,6 +1,7 @@
 import useAuthStore from "@/store/authStore";
 import { useThemeStore } from "@/store/themeStore";
 import { Stack } from "expo-router";
+import React from "react";
 import {
   MD3DarkTheme,
   MD3LightTheme,
@@ -9,8 +10,13 @@ import {
 } from "react-native-paper";
 
 const ScreenLayout = () => {
-  const { isLoggedIn } = useAuthStore((state) => state);
-  const { theme } = useThemeStore((state) => state);
+  const { isLoggedIn, loadAuthState } = useAuthStore((state) => state);
+  const { theme, loadTheme } = useThemeStore((state) => state);
+
+  React.useEffect(() => {
+    loadTheme();
+    loadAuthState();
+  }, []);
 
   const paperTheme: ThemeBase = theme === "dark" ? MD3DarkTheme : MD3LightTheme;
 
