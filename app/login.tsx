@@ -5,7 +5,7 @@ import { StyleSheet, View } from "react-native";
 import { Button, Text, useTheme } from "react-native-paper";
 
 const Login = () => {
-  const { login } = useAuthStore();
+  const { login, resetOnboarding } = useAuthStore();
   const { colors } = useTheme();
 
   const theme = useThemeStore((state) => state.theme);
@@ -26,6 +26,14 @@ const Login = () => {
         Sign In
       </Button>
 
+      <Button
+        mode="contained"
+        onPress={resetOnboarding}
+        style={styles.button}
+        contentStyle={{ paddingVertical: 8 }}
+      >
+        Reset Onboarding
+      </Button>
       <Button
         mode="text"
         onPress={toggleTheme}
